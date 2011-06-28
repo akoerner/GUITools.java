@@ -44,11 +44,15 @@ public class GUITools {
 	public static Font loadTTFFontFromFile(String fileName) {
 		Font font = null;
 		try {
-			InputStream is = GUITools.class.getResourceAsStream(fileName);
-			font = Font.createFont(Font.TRUETYPE_FONT, is);
-			System.out.println("here");
+			File f = new File (fileName); 
+			System.out.println(f.getAbsolutePath());
+			FileInputStream in = new FileInputStream (f);
+			System.out.println("b");
+			Font dynamicFont = Font.createFont (Font.TRUETYPE_FONT, in);
+			System.out.println("c");
+			return dynamicFont.deriveFont (32f);
 		} catch (Exception ex) {
-			//ex.printStackTrace();
+			ex.printStackTrace();
 			System.out.println("plain jane");
 			font = new Font("serif", Font.PLAIN, 24);
 		}
