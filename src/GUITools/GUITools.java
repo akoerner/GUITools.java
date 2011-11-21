@@ -41,19 +41,15 @@ public class GUITools {
 				randomGenerator.nextInt(255), randomGenerator.nextInt(255));
 	}
 
-	public static Font loadTTFFontFromFile(String fileName) {
+	public static Font loadTTFFontFromFile(String fileName, float size) {
 		Font font = null;
 		try {
 			File f = new File (fileName); 
 			System.out.println(f.getAbsolutePath());
 			FileInputStream in = new FileInputStream (f);
-			System.out.println("b");
 			Font dynamicFont = Font.createFont (Font.TRUETYPE_FONT, in);
-			System.out.println("c");
-			return dynamicFont.deriveFont (32f);
+			return dynamicFont.deriveFont (size);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("plain jane");
 			font = new Font("serif", Font.PLAIN, 24);
 		}
 		return font;
