@@ -17,7 +17,7 @@ class DatePicker extends JFrame implements ActionListener{
 	JLabel l = new JLabel("", JLabel.CENTER);
 	String day = "";
 	JButton[] button = new JButton[49];
-	JButton previous, next;
+	JButton previous, next, today;
 	JTextField dateField;
 
 	public DatePicker(JFrame parent, JTextField dateField){
@@ -49,19 +49,24 @@ class DatePicker extends JFrame implements ActionListener{
 		
 		
 		JPanel p2 = new JPanel(new GridLayout(1, 3));
-		previous = new JButton("<< Previous");
+		previous = new JButton("<<");
 		previous.addActionListener(this);
-		
-		
-		p2.add(previous);
-		p2.add(l);
-		next = new JButton("Next >>");
+		next = new JButton(">>");
 		next.addActionListener(this);
-		if(next.getText().equals("")){
-			p2.add(new JLabel());
-		}else{
-			p2.add(next);
-		}
+		
+		JPanel monthSelect = new JPanel();
+		monthSelect.setLayout(new FlowLayout());
+		monthSelect.add(previous);
+		monthSelect.add(next);
+		
+		p2.add(monthSelect);
+		p2.add(l);
+		this.today = new JButton();
+		this.today.addActionListener(this);
+		this.today.setText("Today");
+		
+		p2.add(today);
+	
 		this.add(p1, BorderLayout.CENTER);
 		this.add(p2, BorderLayout.SOUTH);
 		this.pack();
@@ -123,6 +128,13 @@ class DatePicker extends JFrame implements ActionListener{
 		if(e.getSource().equals(this.next)){
 			this.month++;
 			this.displayDate();
+		}
+		if(e.getSource().equals(this.today)){
+			Calendar calendar = Calendar.getInstance();
+			this.day = calendar.get(Calendar.DAY_OF_MONTH) +""; 
+			this.dateField.setEnabled(true);
+			this.toggleVisable();
+			this.dateField.setText(this.getPickedDate());
 		}
 		
 	}
