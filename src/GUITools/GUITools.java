@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -14,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
@@ -78,6 +80,16 @@ public class GUITools {
 					.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
 		} catch (Exception e) {
 			System.out.println("Error setting Motif LAF: " + e);
+		}
+	}
+	
+	public static void makeSwingComponentTransparent(float transparencyLevel, JComponent component){
+		try {
+		    Class<?> awtUtilitiesClass = Class.forName("com.sun.awt.AWTUtilities");
+		    Method method = awtUtilitiesClass.getMethod("setWindowOpacity", Window.class, float.class); 
+		    method.invoke(null, component, transparencyLevel);
+		} catch (Exception exc) {
+		    exc.printStackTrace();
 		}
 	}
 	
