@@ -9,22 +9,31 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-class DatePicker extends JFrame implements ActionListener{
-	int month = java.util.Calendar.getInstance().get(java.util.Calendar.MONTH);
-	int year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
+class DatePicker extends JFrame implements ActionListener, MouseListener{
+	private int month = java.util.Calendar.getInstance().get(java.util.Calendar.MONTH);
+	private int year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
 	private final String[] dayOfTheWeekHeader = { " Sun", " Mon", " Tue", " Wed", " Thur", " Fri", " Sat" };
-	String dateFormat = "EEEE, MMMM d, yyyy";
-	JLabel l = new JLabel("", JLabel.CENTER);
-	String day = "";
-	JButton[] button = new JButton[49];
-	JButton previous, next, today;
-	JTextField dateField;
+	private String dateFormat = "EEEE, MMMM d, yyyy";
+	private JLabel l = new JLabel("", JLabel.CENTER);
+	private String day = "";
+	private JButton[] button = new JButton[49];
+	private JLabel previousYear, previousMonth, nextMonth, nextYear, today;
+	private JTextField dateField;
+	private JFrame parent;
 
 	public DatePicker(JFrame parent, JTextField dateField){
 		this.dateField = dateField;
+		this.parent = parent;
+		this.setSize(350, 255);
+		this.setResizable(false);
+		this.setDefaultLookAndFeelDecorated(false);
+		this.setUndecorated(true);
+		this.setAlwaysOnTop(true);
+		
+		new JFrameDragger(this);
 		JPanel p1 = new JPanel(new GridLayout(7, 7));
 		p1.setPreferredSize(new Dimension(430, 120));
-
+		p1.setMaximumSize(new Dimension(430, 120));
 		for (int x = 0; x < button.length; x++){
 			final int selection = x;
 			button[x] = new JButton();
@@ -41,7 +50,7 @@ class DatePicker extends JFrame implements ActionListener{
 		try {
 		    Class<?> awtUtilitiesClass = Class.forName("com.sun.awt.AWTUtilities");
 		    Method method = awtUtilitiesClass.getMethod("setWindowOpacity", Window.class, float.class); 
-		    method.invoke(null, this, 0.90f);
+		    method.invoke(null, this, 0.85f);
 		} catch (Exception exc) {
 		    exc.printStackTrace();
 		}
@@ -49,30 +58,45 @@ class DatePicker extends JFrame implements ActionListener{
 		
 		
 		JPanel p2 = new JPanel(new GridLayout(1, 3));
-		previous = new JButton("<<");
-		previous.addActionListener(this);
-		next = new JButton(">>");
-		next.addActionListener(this);
+		previousMonth = new JLabel("<");
+		previousMonth.addMouseListener(this);
+		nextMonth = new JLabel(">");
+		nextMonth.addMouseListener(this);
+		previousYear = new JLabel("<<   ");
+		previousYear.addMouseListener(this);
+		nextYear = new JLabel("   >>");
+		nextYear.addMouseListener(this);
 		
-		JPanel monthSelect = new JPanel();
-		monthSelect.setLayout(new FlowLayout());
-		monthSelect.add(previous);
-		monthSelect.add(next);
+		this.previousMonth.setSize(5, 10);
 		
-		p2.add(monthSelect);
+		
+		
+		JPanel monthYearSelect = new JPanel();
+		monthYearSelect.setLayout(new FlowLayout());
+		monthYearSelect.add(previousYear);
+		monthYearSelect.add(previousMonth);
+		monthYearSelect.add(nextMonth);
+		monthYearSelect.add(nextYear);
+		
+		p2.add(monthYearSelect);
 		p2.add(l);
-		this.today = new JButton();
-		this.today.addActionListener(this);
-		this.today.setText("Today");
+		this.today = new JLabel();
+		this.today.addMouseListener(this);
+		this.today.setText("       Today");
 		
 		p2.add(today);
 	
 		this.add(p1, BorderLayout.CENTER);
 		this.add(p2, BorderLayout.SOUTH);
-		this.pack();
+		//this.pack();
 		this.setLocationRelativeTo(parent);
 		displayDate();
 		this.setVisible(false);
+		
+	}
+
+	private void setMinimumSize(int i, int j) {
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -108,6 +132,7 @@ class DatePicker extends JFrame implements ActionListener{
 	}
 	
 	public void toggleVisable(){
+		this.setLocation(parent.getLocation());
 		this.setVisible(!this.isVisible());
 	}
 
@@ -121,21 +146,59 @@ class DatePicker extends JFrame implements ActionListener{
 				this.dateField.setText(this.getPickedDate());
 			}
 		}
-		if(e.getSource().equals(this.previous)){
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		if(arg0.getSource().equals(this.previousMonth)){
 			this.month--;
 			this.displayDate();
 		}
-		if(e.getSource().equals(this.next)){
+		if(arg0.getSource().equals(this.nextMonth)){
 			this.month++;
 			this.displayDate();
 		}
-		if(e.getSource().equals(this.today)){
+		if(arg0.getSource().equals(this.previousYear)){
+			this.year--;
+			this.displayDate();
+		}
+		if(arg0.getSource().equals(this.nextYear)){
+			this.year++;
+			this.displayDate();
+		}
+		if(arg0.getSource().equals(this.today)){
 			Calendar calendar = Calendar.getInstance();
 			this.day = calendar.get(Calendar.DAY_OF_MONTH) +""; 
 			this.dateField.setEnabled(true);
 			this.toggleVisable();
 			this.dateField.setText(this.getPickedDate());
 		}
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		Cursor curser = new Cursor(Cursor.HAND_CURSOR);
+		this.getRootPane().setCursor(curser);
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		Cursor curser = new Cursor(Cursor.DEFAULT_CURSOR);
+		this.getRootPane().setCursor(curser);
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
 		
 	}
 }
