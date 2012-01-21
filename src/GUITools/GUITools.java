@@ -1,12 +1,15 @@
 package GUITools;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Random;
+import java.util.StringTokenizer;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -83,6 +87,11 @@ public class GUITools {
 		}
 	}
 	
+	public static Point getScreenCenterPoint(){
+	    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+	    return new Point(dim.width/2, dim.height/2);
+	}
+	
 	public static void makeSwingComponentTransparent(float transparencyLevel, JComponent component){
 		try {
 		    Class<?> awtUtilitiesClass = Class.forName("com.sun.awt.AWTUtilities");
@@ -93,6 +102,23 @@ public class GUITools {
 		}
 	}
 	
+	public static String javaCamelCaseToHuman(String s) {
+		 s = (s.charAt(0) + "").toUpperCase() + s.substring(1);
+		return s.replaceAll(
+		      String.format("%s|%s|%s",
+		         "(?<=[A-Z])(?=[A-Z][a-z])",
+		         "(?<=[^A-Z])(?=[A-Z])",
+		         "(?<=[A-Za-z])(?=[^A-Za-z])"
+		      ),
+		      " "
+		   );
+	}
+	
+	public static String humanToJavaCamelCase(String s) {
+		
+		s = s.replaceAll(" ", "");
+		return (s.charAt(0) + "").toLowerCase() + s.substring(1);
+	}
 	
 	
 	

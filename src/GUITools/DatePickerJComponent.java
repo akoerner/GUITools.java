@@ -6,6 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -13,15 +17,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import org.joda.time.DateTime;
+
 public class DatePickerJComponent extends JComponent implements MouseListener{
 	
-	private JFrame rootFrame;
 	private RoundJTextField dateTextField;
 	private String promptText;
 	private DatePicker datePicker;
+	private DateTime oldStartDate= null;
+	private DateTime oldEndDate= null;
 	
-	public DatePickerJComponent(JFrame rootFrame, String promptText){
-		this.rootFrame = rootFrame;
+	public DatePickerJComponent(String promptText){
 		this.promptText = promptText;
 		this.initilize();
 	}
@@ -37,10 +43,35 @@ public class DatePickerJComponent extends JComponent implements MouseListener{
 		this.add(dateTextField);
 		
 		this.setVisible(true);
-		datePicker = new DatePicker(this.rootFrame, this.dateTextField);
+		datePicker = new DatePicker(this.dateTextField);
 		
 	}
-
+	
+	public DateTime getPickedDate(){
+		if(this.dateTextField.getText().equalsIgnoreCase(this.promptText) || this.dateTextField.getText().equalsIgnoreCase("")){
+			return null;
+		}else{
+			String pattern = "E, MMMM d, yyyy";
+			DateFormat df = new SimpleDateFormat(pattern); // This line
+			
+			try {
+				return  (new DateTime(df.parse(this.dateTextField.getText())));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			};
+		}
+		return null;
+	}
+	
+	public boolean hasChanged(){
+		return this.datePicker.hasChanged();
+	}
+	
+	public void resetHasChanged(){
+		this.datePicker.resetHasChanged();
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub

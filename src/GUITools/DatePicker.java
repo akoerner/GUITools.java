@@ -2,9 +2,13 @@ package GUITools;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Ellipse2D;
 //import static java.awt.GraphicsDevice.WindowTranslucency.*;
 //import com.sun.awt.AWTUtilities;
 import javax.swing.*;
+
+import org.joda.time.DateTime;
+
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,10 +24,12 @@ class DatePicker extends JFrame implements ActionListener, MouseListener{
 	private JLabel previousYear, previousMonth, nextMonth, nextYear, today;
 	private JTextField dateField;
 	private JFrame parent;
+	
+	
+	private boolean hasChanged = false;
 
-	public DatePicker(JFrame parent, JTextField dateField){
+	public DatePicker(JTextField dateField){
 		this.dateField = dateField;
-		this.parent = parent;
 		this.setSize(350, 255);
 		this.setResizable(false);
 		this.setDefaultLookAndFeelDecorated(false);
@@ -51,9 +57,17 @@ class DatePicker extends JFrame implements ActionListener, MouseListener{
 		    Class<?> awtUtilitiesClass = Class.forName("com.sun.awt.AWTUtilities");
 		    Method method = awtUtilitiesClass.getMethod("setWindowOpacity", Window.class, float.class); 
 		    method.invoke(null, this, 0.85f);
-		} catch (Exception exc) {
-		    exc.printStackTrace();
-		}
+		} catch (Exception exc) {}
+		
+		
+	    
+		try {
+		    Class<?> awtUtilitiesClass = Class.forName("com.sun.awt.AWTUtilities");
+		    Method method = awtUtilitiesClass.getMethod("setWindowShape", Window.class, Shape.class);
+		    Ellipse2D shape = new Ellipse2D.Float(0, 0, this.getWidth(), this.getHeight());
+		    method.invoke(null, this, shape);
+		} catch (Exception exc) {}
+		
 		
 		
 		
@@ -94,7 +108,15 @@ class DatePicker extends JFrame implements ActionListener, MouseListener{
 		this.setVisible(false);
 		
 	}
-
+	
+	public boolean hasChanged(){
+		return this.hasChanged;
+	}
+	
+	public void resetHasChanged(){
+		this.hasChanged = false;
+	}
+	
 	private void setMinimumSize(int i, int j) {
 		// TODO Auto-generated method stub
 		
@@ -132,7 +154,6 @@ class DatePicker extends JFrame implements ActionListener, MouseListener{
 	}
 	
 	public void toggleVisable(){
-		this.setLocation(parent.getLocation());
 		this.setVisible(!this.isVisible());
 	}
 
@@ -143,6 +164,7 @@ class DatePicker extends JFrame implements ActionListener, MouseListener{
 				this.day = button[buttonNumber].getActionCommand();
 				this.dateField.setEnabled(true);
 				this.toggleVisable();
+				this.hasChanged = true;
 				this.dateField.setText(this.getPickedDate());
 			}
 		}
@@ -171,6 +193,7 @@ class DatePicker extends JFrame implements ActionListener, MouseListener{
 			this.day = calendar.get(Calendar.DAY_OF_MONTH) +""; 
 			this.dateField.setEnabled(true);
 			this.toggleVisable();
+			this.hasChanged = true;
 			this.dateField.setText(this.getPickedDate());
 		}
 		

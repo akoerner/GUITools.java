@@ -97,7 +97,6 @@ public class TimePeriodSwimLane extends JComponent{
 		int offset = this.startHour * 60;
 		int normalizedEndMinute = (this.endHour - this.startHour) * 60 + this.endMinute;
 		int minutePointer = 0;
-		System.out.println(this.laneWidthInPixels);
 		
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setColor(this.secondaryColor);
@@ -107,7 +106,6 @@ public class TimePeriodSwimLane extends JComponent{
 			if(minutePointer == 0 || minutePointer%60 == 0){
 				
 				if(this.hourMarkers){
-					System.out.println("placement: " + this.minutesToPixels(minutePointer));
 					if(minutePointer != 0){
 						if(this.showHour){
 							g2.draw(new Line2D.Float(this.minutesToPixels(minutePointer), 0, this.minutesToPixels(minutePointer), this.laneHightInPixels-10));
